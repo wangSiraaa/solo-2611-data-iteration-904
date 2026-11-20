@@ -1,0 +1,4 @@
+{"op": "resolve_and_inspect", "file": "inspections.json", "report_id": "R1"}
+{"op": "revise_chainage", "file": "revision.json"}
+{"op": "resolve_and_inspect", "file": "inspections.json", "report_id": "R2"}
+{"op": "read_report", "report_id": "R1"}

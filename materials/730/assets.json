@@ -1,0 +1,19 @@
+{
+  "assets": [
+    {
+      "asset_id": "A",
+      "route_id": "L",
+      "physical_position": 350
+    },
+    {
+      "asset_id": "B",
+      "route_id": "L",
+      "physical_position": 470
+    },
+    {
+      "asset_id": "C",
+      "route_id": "L",
+      "physical_position": 440
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "revision": "r1",
+  "route_id": "L",
+  "length": 1000,
+  "sections": [
+    {
+      "section_id": "P1",
+      "physical_start": 0,
+      "physical_end": 400,
+      "label_start": 0
+    },
+    {
+      "section_id": "P2",
+      "physical_start": 400,
+      "physical_end": 700,
+      "label_start": 300
+    },
+    {
+      "section_id": "P3",
+      "physical_start": 700,
+      "physical_end": 1000,
+      "label_start": 650
+    }
+  ]
+}

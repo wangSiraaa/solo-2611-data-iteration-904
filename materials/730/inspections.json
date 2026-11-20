@@ -1,0 +1,19 @@
+{
+  "point_queries": [
+    350,
+    620
+  ],
+  "jobs": [
+    {
+      "job_id": "J",
+      "route_id": "L",
+      "spans": [
+        {
+          "section_id": "P2",
+          "label_start": 350,
+          "label_end": 390
+        }
+      ]
+    }
+  ]
+}
