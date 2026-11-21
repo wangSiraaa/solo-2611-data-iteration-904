@@ -91,7 +91,129 @@ The facility identities and physical positions are unchanged; only the
 label→physical mapping moved. Old report R1 keeps explaining the original
 labels and positions (`stale=true` once r2 is current).
 
-## Running
+---
+
+# Temporary-exhibition settlement (临展结算)
+
+Two new modules build on the same catalogue and physical-facility identities:
+
+* `exhibition_roster.py` — roster books (班簿): versioned, replace/revoke,
+  cross-org attribution, per-segment on-site lookup.
+* `exhibition_settlement.py` — sessions and tickets: exact optimal selection,
+  auditable per-session/per-segment rendering, frozen contracts, and
+  post-hoc invalidation of an old contract's witnesses.
+
+Nothing here changes the catalogue or inspection modules; the settlement
+layer only *consumes* their label→physical conversion and facility identity.
+
+## Rosters (班簿) and attribution
+
+A roster revision is a **full snapshot** resolved against a named catalogue
+revision.  It names a `section_id` and half-open label spans, so its union
+identifies exactly which facilities it covers.  **Two sections may carry the
+same label**; because facilities have fixed physical identities, moving a
+presence to "another section with the same label" moves it to a *different
+facility*.  Every shift records `person, org, facility` and a half-open
+presence `[start, end)`.
+
+A later revision either **replaces** the snapshot wholesale or **revokes** it.
+Every revision remains queryable as its own on-site snapshot (截面).
+
+**Dispute rule.** If the *same person* is recorded by two different
+organisations at the *same facility* with overlapping presence, then over the
+overlap neither organisation may use that person.  Everyone else, and every
+other interval, stays usable.  Adjacent presence may hand over at a boundary
+(`end == next.start`) with no gap.
+
+`RosterBook.lookup(revision, facility)` returns elementary segments — every
+shift boundary is a breakpoint — with usable staff per org and the raw shifts
+that caused each dispute:
+
+```
+[0, 2)  乙: 小周, 甲: 小陈
+[2, 4)  乙: 小周
+  DISPUTE 小陈 recorded by ['乙', '甲'] (shifts ['d_chen_jia', 'd_chen_yi'])
+          -> excluded for both
+[4, 8)  乙: 小周, 甲: 小陈
+```
+
+## Tickets, sessions and exact selection
+
+One venue (one facility) issues **one ticket for one day**, holding at most
+20 **sessions**.  Each session fixes a complete, immovable half-open viewing
+window, **two distinct contracted orgs**, and a whole-session payment.  A
+session pays only in full and only if, for its **whole** window, each org can
+field one qualified person.  A witness may hand over inside a session, but one
+person witnesses only one session at an instant.
+
+Take usable-segment endpoints plus session bounds; they cut the day into
+cells where the candidate pool and the active sessions are constant.  Because
+capacity resets at every instant, feasibility decomposes per cell: for each
+`(cell, org)` the number of selected sessions needing it must not exceed the
+usable head-count.  The optimum is a maximum-weight subset of sessions under
+these per-cell capacities, solved **exactly** by branch and bound (n ≤ 20)
+with a greedy incumbent.
+
+Example (the task's scenario), one 甲 + one 乙 over `[0,8)`, sessions
+`X=[0,8)/7`, `Y=[0,4)/4`, `Z=[4,8)/4`:
+
+| staff                            | optimal | value |
+|----------------------------------|---------|-------|
+| 小陈(甲), 小周(乙), both `[0,8)`  | `Y+Z`   | 8     |
+| + 小李(甲), 小赵(乙) `[0,8)`      | `X+Y+Z` | 15    |
+| 小陈 `[3,5)` moved to same-label P1 | none | 0     |
+
+All three are individually signable in the first case — `X` alone pays 7, but
+`Y+Z` pays 8, so `X` is signable yet not selected.  Ties yield any one
+optimal witness (deterministic: higher value first, then session id).
+
+## Contracts: freeze, re-plan, invalidate
+
+`sign_contract` freezes the **catalogue revision, roster revision and
+allocation** together with a content fingerprint.  After a later roster
+revision or revocation, `SettlementPlanner.plan` re-plans from the new
+snapshot, while `invalid_witnesses(contract, current)` re-checks the *frozen*
+witnesses and reports exactly which no longer hold, with a reason:
+
+| reason              | meaning                                            |
+|---------------------|----------------------------------------------------|
+| `roster_revoked`    | the whole roster was withdrawn                     |
+| `person_not_present`| the person has no presence overlapping the segment |
+| `presence_gap`      | present for only part of the segment               |
+| `cross_org_dispute` | present under two orgs at some instant             |
+| `not_usable_for_org`| present throughout, but only under the wrong org   |
+
+The contract object itself is immutable and keeps naming the people it was
+signed with; only the re-check marks which of them are now unsupported.
+
+## Running the exhibition layer
+
+```bash
+python3 solution/exhibition_demo.py                 # the three changes + cases
+python3 -m unittest discover -s solution/tests -v   # all tests
+python3 solution/exhibition_cli.py books
+python3 solution/exhibition_cli.py lookup --revision v4 --facility EXH@P2
+python3 solution/exhibition_cli.py plan --ticket T1 --revision v1 --sign CT0 --db exh.db
+python3 solution/exhibition_cli.py invalidate --contract CT0 --db exh.db
+```
+
+The standalone CLI (`exhibition_cli.py`) needs only `materials/exhibition/
+scenario.json` and is the on-site entry point: it prints per-segment staffing,
+the optimal auditable selection, and which frozen witnesses a later revision
+invalidated.  The demo also exercises a cross-org dispute, an adjacent
+handover, and dense-overlap vs. all-day-staggered staffing reaching the same
+value by different people.
+
+## Cost
+
+Selection is exact; worst case is the combinatorial limit (20 fully
+overlapping sessions, capacity 10) at ~0.5 s; typical and disjoint tickets are
+sub-millisecond.  Lookup is O(#shifts) per facility; contracts are persisted
+in the separate `contract*` schema and reload-ready.
+
+---
+
+## Running (catalogue + inspection)
 
 ```bash
 python3 solution/run_demo.py                    # in-memory

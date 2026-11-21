@@ -1,0 +1,104 @@
+{
+  "route": {
+    "revision": "r1",
+    "route_id": "L",
+    "length": 1000,
+    "sections": [
+      {"section_id": "P1", "physical_start": 0, "physical_end": 400, "label_start": 0},
+      {"section_id": "P2", "physical_start": 400, "physical_end": 700, "label_start": 300},
+      {"section_id": "P3", "physical_start": 700, "physical_end": 1000, "label_start": 650}
+    ]
+  },
+  "assets": [
+    {"asset_id": "EXH@P2", "route_id": "L", "physical_position": 450},
+    {"asset_id": "ALT@P1", "route_id": "L", "physical_position": 350}
+  ],
+  "roster_book": {
+    "book_id": "BK1",
+    "route_id": "L",
+    "revisions": [
+      {
+        "revision_id": "v1",
+        "kind": "replace",
+        "catalog_revision": "r1",
+        "spans": [
+          {"section_id": "P2", "label_start": 340, "label_end": 360},
+          {"section_id": "P1", "label_start": 340, "label_end": 360}
+        ],
+        "shifts": [
+          {"shift_id": "s_chen_1", "facility_id": "EXH@P2", "person_id": "小陈", "org_id": "甲", "start": 0, "end": 8},
+          {"shift_id": "s_zhou_1", "facility_id": "EXH@P2", "person_id": "小周", "org_id": "乙", "start": 0, "end": 8}
+        ]
+      },
+      {
+        "revision_id": "v2",
+        "kind": "replace",
+        "catalog_revision": "r1",
+        "spans": [
+          {"section_id": "P2", "label_start": 340, "label_end": 360},
+          {"section_id": "P1", "label_start": 340, "label_end": 360}
+        ],
+        "shifts": [
+          {"shift_id": "s_chen_1", "facility_id": "EXH@P2", "person_id": "小陈", "org_id": "甲", "start": 0, "end": 8},
+          {"shift_id": "s_zhou_1", "facility_id": "EXH@P2", "person_id": "小周", "org_id": "乙", "start": 0, "end": 8},
+          {"shift_id": "s_li_1", "facility_id": "EXH@P2", "person_id": "小李", "org_id": "甲", "start": 0, "end": 8},
+          {"shift_id": "s_zhao_1", "facility_id": "EXH@P2", "person_id": "小赵", "org_id": "乙", "start": 0, "end": 8}
+        ]
+      },
+      {
+        "revision_id": "v3",
+        "kind": "replace",
+        "catalog_revision": "r1",
+        "spans": [
+          {"section_id": "P2", "label_start": 340, "label_end": 360},
+          {"section_id": "P1", "label_start": 340, "label_end": 360}
+        ],
+        "shifts": [
+          {"shift_id": "s_chen_a", "facility_id": "EXH@P2", "person_id": "小陈", "org_id": "甲", "start": 0, "end": 3},
+          {"shift_id": "s_chen_b", "facility_id": "ALT@P1", "person_id": "小陈", "org_id": "甲", "start": 3, "end": 5},
+          {"shift_id": "s_chen_c", "facility_id": "EXH@P2", "person_id": "小陈", "org_id": "甲", "start": 5, "end": 8},
+          {"shift_id": "s_zhou_1", "facility_id": "EXH@P2", "person_id": "小周", "org_id": "乙", "start": 0, "end": 8}
+        ]
+      },
+      {
+        "revision_id": "v4",
+        "kind": "replace",
+        "catalog_revision": "r1",
+        "spans": [
+          {"section_id": "P2", "label_start": 340, "label_end": 360},
+          {"section_id": "P1", "label_start": 340, "label_end": 360}
+        ],
+        "shifts": [
+          {"shift_id": "d_chen_jia", "facility_id": "EXH@P2", "person_id": "小陈", "org_id": "甲", "start": 0, "end": 8},
+          {"shift_id": "d_chen_yi", "facility_id": "EXH@P2", "person_id": "小陈", "org_id": "乙", "start": 2, "end": 4},
+          {"shift_id": "d_zhou", "facility_id": "EXH@P2", "person_id": "小周", "org_id": "乙", "start": 0, "end": 8}
+        ]
+      },
+      {
+        "revision_id": "v5",
+        "kind": "replace",
+        "catalog_revision": "r1",
+        "spans": [
+          {"section_id": "P2", "label_start": 340, "label_end": 360},
+          {"section_id": "P1", "label_start": 340, "label_end": 360}
+        ],
+        "shifts": [
+          {"shift_id": "h_chen", "facility_id": "EXH@P2", "person_id": "小陈", "org_id": "甲", "start": 0, "end": 4},
+          {"shift_id": "h_li", "facility_id": "EXH@P2", "person_id": "小李", "org_id": "甲", "start": 4, "end": 8},
+          {"shift_id": "h_zhou", "facility_id": "EXH@P2", "person_id": "小周", "org_id": "乙", "start": 0, "end": 8}
+        ]
+      }
+    ]
+  },
+  "tickets": [
+    {
+      "ticket_id": "T1",
+      "facility_id": "EXH@P2",
+      "sessions": [
+        {"session_id": "X", "window_start": 0, "window_end": 8, "org_a": "甲", "org_b": "乙", "value": 7},
+        {"session_id": "Y", "window_start": 0, "window_end": 4, "org_a": "甲", "org_b": "乙", "value": 4},
+        {"session_id": "Z", "window_start": 4, "window_end": 8, "org_a": "甲", "org_b": "乙", "value": 4}
+      ]
+    }
+  ]
+}
